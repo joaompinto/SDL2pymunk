@@ -25,12 +25,12 @@ class MovementSystem(sdl2.ext.Applicator):
             sprite.x, sprite.y = body.position.x-radius.r, flipy(body.position.y)-radius.r
 
 
-class Radius(object):
+class Radius:
     def __init__(self, r):
         self.r = r
 
 
-class Factory():
+class Factory:
 
     def __init__(self, world):
         self.world = world
@@ -55,8 +55,8 @@ class Factory():
                                 pymunk.Segment(static_body, (x, y - h), (x, y), 0.0),
                                 ]
                 for line in static_lines:
-                    line.elasticity = 0.6
-                    line.friction = 0.85
+                    line.elasticity = 0.85
+                    line.friction = 0.6
                 world.space.add(static_lines)
                 self.sprite = sprite
                 self.sprite.position = x, flipy(y)
@@ -70,8 +70,8 @@ class Factory():
                 self.body = Body(1, moment=66)
                 self.radius = Radius(radius)
                 self.shape = pymunk.Circle(body=self.body, radius=radius)
-                self.shape.elasticity = .6
-                self.shape.friction = 0.85
+                self.shape.elasticity = 0.6
+                self.shape.friction = 0.6
                 self.sprite = sprite
                 self.sprite.depth = 10  # Keep circles on top
                 self.sprite.position = x-radius, flipy(y)-radius

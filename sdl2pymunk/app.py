@@ -13,6 +13,7 @@ class App:
         self.texture_renderer = sdl2.ext.Renderer(self.window)
         self.world = sdl2.ext.World()
         self.world.space = pymunk.Space()
+        self.world.space.sleep_time_threshold = 0.3
 
         self.sprite_renderer = TextureRenderer(self.texture_renderer)
 
@@ -33,7 +34,7 @@ class App:
     def run(self):
         running = True
         while running:
-            self.world.space.step(0.001)
+            self.world.space.step(0.0016)
             self.texture_renderer.clear()
             self.world.process()
             events = self.get_events()
