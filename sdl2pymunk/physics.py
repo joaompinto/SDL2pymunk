@@ -4,8 +4,6 @@ from pymunk import Body, Shape  # We will use them as SDL2 Entity components
 import sdl2.ext
 
 
-def flipy(y):
-    return -y+800
 
 class MovementSystem(sdl2.ext.Applicator):
     """
@@ -22,8 +20,11 @@ class MovementSystem(sdl2.ext.Applicator):
     def process(self, world, componentsets):
         """ Adjust position for entities with body an radius (circles) """
         for body, radius, sprite in componentsets:
-            sprite.x, sprite.y = body.position.x-radius.r, flipy(body.position.y)-radius.r
+            sprite.x, sprite.y = body.position.x-radius.r, self.flipy(body.position.y)-radius.r
 
+
+    def flipy(self, y):
+        return -y + self.height
 
 class Radius:
     def __init__(self, r):
@@ -46,7 +47,7 @@ class Factory:
             def __init__(self, world, sprite, position):
                 self.world = _parent_class.world
                 x, y = position
-                y = flipy(y)
+                y = self.world.movement_system.flipy(y)
                 w, h = sprite.size
                 static_body = Body()
                 static_lines = [pymunk.Segment(static_body, (x, y), (x + w, y), 0.0),
@@ -59,14 +60,15 @@ class Factory:
                     line.friction = 0.6
                 world.space.add(static_lines)
                 self.sprite = sprite
-                self.sprite.position = x, flipy(y)
+                self.sprite.position = x, self.world.movement_system.flipy(y)
                 self.sprite.angle = 0
 
         class Circle(sdl2.ext.Entity):
 
             def __init__(self, world, sprite, position, radius):
+                self.world = _parent_class.world
                 x, y = position
-                y = flipy(y)
+                y = self.world.movement_system.flipy(y)
                 self.body = Body(1, moment=66)
                 self.radius = Radius(radius)
                 self.shape = pymunk.Circle(body=self.body, radius=radius)
@@ -74,7 +76,7 @@ class Factory:
                 self.shape.friction = 0.6
                 self.sprite = sprite
                 self.sprite.depth = 10  # Keep circles on top
-                self.sprite.position = x-radius, flipy(y)-radius
+                self.sprite.position = x-radius, self.world.movement_system.flipy(y)-radius
                 self.body.position = x, y
                 self.sprite.angle = 0
                 self.world.space.add(self.body, self.shape)

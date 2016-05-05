@@ -53,11 +53,12 @@ class Factory(object):
                                                             0x000000FF))  # alpha channel
         circle_renderer = sdl2.ext.Renderer(circ_sprite)
         draw_circle(circle_renderer, radius, radius, radius, color, fill_color)
-        return self.factory.from_surface(circ_sprite.surface)
+        sprite = self.factory.from_surface(circ_sprite.surface)
+        sprite.angle = 0
+        return sprite
 
 
     def Rectangle(self, size, color, fill_color=None):
-        print(color)
         circ_sprite = self.factory.create_software_sprite(size=size,
                                                           masks=(0xFF000000,  # red channel
                                                                  0x00FF0000,  # green channel
@@ -68,4 +69,6 @@ class Factory(object):
             renderer.fill((0, 0, size[0], size[1]), color=fill_color)
         renderer.draw_rect((0, 0, size[0], size[1]), color=color)
 
-        return self.factory.from_surface(circ_sprite.surface)
+        sprite = self.factory.from_surface(circ_sprite.surface)
+        sprite.angle = 0
+        return sprite
